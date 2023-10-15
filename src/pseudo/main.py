@@ -3,14 +3,11 @@ import os
 import argparse
 import json
 
+from pseudo.config import *
 import pseudo.utils as utils
 import pseudo.ast_reader as ast_reader
 import pseudo.examples as examples
-
-# Set up authentication for the OpenAI API
-openai.api_key = os.environ["OPENAI_API_KEY"]
-START_EDIT_TAG = "START_PSEUDO"
-END_EDIT_TAG = "END_PSEUDO"
+import pseudo.validator as validator
 
 PERSONA = "You are PseudoGPT, an assistant that helps programmers write pseudocode and code. You are given a file with Python code and asked to generate pseudocode for it."
 GEN_PSEUDO_PROMPT = """ Given the following Python code, write pseudocode for the code and return only that pseudocode."""
@@ -25,10 +22,9 @@ RETURN_EDIT = f""" Since # {START_EDIT_TAG} and # {END_EDIT_TAG} are present, yo
 WARNING = """IMPORTANT: Please do not return text before or after the code.
 IMPORTANT: Do NOT summarize parts of the code. Show the code IN FULL."""
 
-EXAMPLES = examples.get_examples_str()
+VALIDATOR_COMMENTS_PRESENT = """Validator returned comments. Please take these comments into account when generating the code."""
 
-MAX_TOKENS = 4000
-LOG_MSG = True
+EXAMPLES = examples.get_examples_str()
 
 
 def cli():
@@ -98,6 +94,20 @@ def generate_code(input_file, dry):
     proj_ast = ast_reader.get_AST_project(os.getcwd())
     symbol_list = ast_reader.get_symbols_project(proj_ast)
 
+    code = pseudo_to_code(pseudocode, template, symbol_list)
+    validator_return = validator.validate_output(pseudocode, template, code)
+
+    if validator_return != "Valid":
+        code = validator.fix_code(code, validator_return)
+
+    # Write to python file
+    if not dry:
+        with open(output_file, "w") as f:
+            f.write(code)
+    print(f"Code written to {output_file}")
+
+
+def pseudo_to_code(pseudocode, template, symbol_list):
     symbol_str = json.dumps(symbol_list, cls=ast_reader.CustomEncoder)
 
     system_msg = [
@@ -137,11 +147,6 @@ def generate_code(input_file, dry):
     code = response.choices[0].message.content
     code = utils.strip_code_markdown(code)
 
-    # Write to python file
-    if not dry:
-        with open(output_file, "w") as f:
-            f.write(code)
-
     if LOG_MSG:
         for message in messages:
             print(message["role"] + ":")
@@ -149,5 +154,5 @@ def generate_code(input_file, dry):
         print("Code:")
         print(code)
 
-    print(f"Code written to {output_file}")
-    print(f"Template exists: {template_exists}")
+        print(f"Template exists: {template_exists}")
+    return code

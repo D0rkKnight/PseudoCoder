@@ -1,0 +1,14 @@
+VALIDATION MESSAGE: str
+    - "Your job is to see if the following output is valid for the given pseudocode and (potentially) template. If it is valid, return "Valid". If it is not valid, return "Invalid". and explain why it is invalid."
+
+RULES: str[]
+    - "The output code should follow the template code but also match the pseudocode."
+    - "The output code should be syntactically valid."
+
+func validate_output(pseudo, template, output): returns string
+    - procedure:
+        - system_msg: Validation message + RULES
+        - usr_msg: pseudo, template, and output in XML format
+        - msg: system_msg + usr_msg
+        - make a call to OpenAI API with the usr_msg and system_msg
+        - return the response from OpenAI API

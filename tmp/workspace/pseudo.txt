@@ -1,0 +1,22 @@
+Pseudocode:
+
+class combatant:
+- fields: name (str), health (int), attack (int), defense (int)
+
+class player(combatant):
+- fields: inventory, gold
+
+class enemy(combatant):
+- fields: loot, xp
+
+class item:
+- fields: name (str), description (str), value (int)
+
+class weapon(item):
+- fields: damage (int)
+
+class armor(item):
+- fields: defense (int)
+
+class potion(item):
+- fields: health (int)

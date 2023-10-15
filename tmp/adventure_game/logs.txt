@@ -1,0 +1,229 @@
+system:
+You are PseudoGPT, an assistant that helps programmers write pseudocode and code. You are given a file with Python code and asked to generate pseudocode for it.
+
+system:
+Given the following Python code, pseudocode, and tree of symbols, modify the template code to match the pseudocode while retaining the overall structure, and return only the Python code. If the template code matches the pseudocode fully, return the template code.
+IMPORTANT: Please do not return text before or after the code.
+IMPORTANT: Do NOT summarize parts of the code. Show the code IN FULL.
+
+system:
+<Example>
+    <Pseudocode>
+        class A:
+- fields: str_var, int_var
+    </Pseudocode>
+
+    <Template>
+        
+    </Template>
+
+    <Output>
+        class A:
+
+    str_var: str
+    int_var: int
+
+    def __init__(self, str_var, int_var):
+    </Output>
+
+    <Comments>
+        Note that the types of the fields must be explicitly declared in the output code.
+    </Comments>
+</Example>
+<Example>
+    <Pseudocode>
+        print Hello World
+    </Pseudocode>
+
+    <Template>
+        print("Hello World")
+    </Template>
+
+    <Output>
+        print("Hello World")
+    </Output>
+
+    <Comments>
+        Note that the template code is returned unchanged because it already matches the pseudocode.
+    </Comments>
+</Example>
+<Example>
+    <Pseudocode>
+        SpawnPool: List(Enemy)
+- Rock
+    </Pseudocode>
+
+    <Template>
+        
+    </Template>
+
+    <Output>
+        from datatypes import enemy
+
+SpawnPool = []
+
+rock = enemy("Rock", 10, 5, 1, 0)
+SpawnPool.append(rock)
+    </Output>
+
+    <Comments>
+        Note how the enemy type is inferred from the symbols list.
+    </Comments>
+</Example>
+
+
+system:
+ Since # START_PSEUDO and # END_PSEUDO are present, you should only edit and return code within those lines. That is, please return code for only the section between # START_PSEUDO and # END_PSEUDO.
+
+
+user:
+These are available symbols: {"C:\\Users\\shouh\\Documents\\Workspace\\PseudoCoder\\tmp\\adventure_game\\combat.py": [{"type": "function", "name": "combat", "children": [{"type": "variable", "name": "enemy", "children": []}, {"type": "variable", "name": "player_choice", "children": []}]}, {"type": "function", "name": "tryAttack", "children": []}, {"type": "function", "name": "spawnEnemy", "children": []}, {"type": "variable", "name": "pebble", "children": []}, {"type": "variable", "name": "stick", "children": []}, {"type": "variable", "name": "dragon_scale", "children": []}, {"type": "variable", "name": "sword", "children": []}, {"type": "variable", "name": "SpawnPool", "children": []}, {"type": "variable", "name": "rock", "children": []}, {"type": "variable", "name": "goblin", "children": []}, {"type": "variable", "name": "dragon", "children": []}, {"type": "variable", "name": "knight", "children": []}], "C:\\Users\\shouh\\Documents\\Workspace\\PseudoCoder\\tmp\\adventure_game\\datatypes.py": [{"type": "class", "name": "combatant", "children": [{"type": "variable", "name": "name", "children": []}, {"type": "variable", "name": "health", "children": []}, {"type": "variable", "name": "attack", "children": []}, {"type": "variable", "name": "defense", "children": []}, {"type": "function", "name": "__init__", "children": []}]}, {"type": "class", "name": "player", "children": [{"type": "variable", "name": "inventory", "children": []}, {"type": "variable", "name": "gold", "children": []}, {"type": "function", "name": "__init__", "children": []}]}, {"type": "class", "name": "enemy", "children": [{"type": "variable", "name": "loot", "children": []}, {"type": "variable", "name": "xp", "children": []}, {"type": "function", "name": "__init__", "children": []}]}, {"type": "class", "name": "item", "children": [{"type": "variable", "name": "name", "children": []}, {"type": "variable", "name": "description", "children": []}, {"type": "variable", "name": "value", "children": []}, {"type": "function", "name": "__init__", "children": []}]}, {"type": "class", "name": "weapon", "children": [{"type": "variable", "name": "damage", "children": []}, {"type": "function", "name": "__init__", "children": []}]}, {"type": "class", "name": "armor", "children": [{"type": "variable", "name": "defense", "children": []}, {"type": "function", "name": "__init__", "children": []}]}], "C:\\Users\\shouh\\Documents\\Workspace\\PseudoCoder\\tmp\\adventure_game\\locations.py": [{"type": "class", "name": "location", "children": [{"type": "variable", "name": "name", "children": []}, {"type": "variable", "name": "description", "children": []}, {"type": "variable", "name": "items", "children": []}, {"type": "variable", "name": "exits", "children": []}, {"type": "function", "name": "__init__", "children": []}]}, {"type": "variable", "name": "list_of_locations", "children": []}, {"type": "variable", "name": "bogwater", "children": []}, {"type": "variable", "name": "great_hall", "children": []}, {"type": "variable", "name": "throne_room", "children": []}], "C:\\Users\\shouh\\Documents\\Workspace\\PseudoCoder\\tmp\\adventure_game\\main.py": [{"type": "function", "name": "display_intro", "children": []}, {"type": "function", "name": "get_player_name", "children": [{"type": "variable", "name": "player_name", "children": []}]}, {"type": "function", "name": "start_game", "children": []}, {"type": "function", "name": "play_again", "children": [{"type": "variable", "name": "play_again", "children": []}]}, {"type": "variable", "name": "player", "children": []}, {"type": "variable", "name": "game_over", "children": []}, {"type": "variable", "name": "game_over", "children": []}]}
+
+user:
+This is the pseudocode: 
+from datatypes import *
+
+class location:
+    name: str
+    description: str
+    items: list[item]
+    exits: list[str]
+
+    def __init__(self, name="", description="", items=[], exits=[]):
+        self.name = name
+        self.description = description
+        self.items = items
+        self.exits = exits
+
+# START_PSEUDO
+list_of_locations = []
+
+bogwater = location("Bogwater", "A swampy bog", [stone, stick])
+list_of_locations.append(bogwater)
+
+great_hall = location("The Great Hall", "A large hall", [bread, water])
+list_of_locations.append(great_hall)
+
+throne_room = location("The Throne Room", "A room with a throne", [sword, shield])
+list_of_locations.append(throne_room)
+
+bogwater.exits = [great_hall]
+great_hall.exits = [bogwater, throne_room]
+throne_room.exits = [great_hall]
+# END_PSEUDO
+
+
+user:
+This is the template code: 
+from datatypes import *
+
+class location:
+    name: str
+    description: str
+    items: list[item]
+    exits: list[str]
+
+    def __init__(self, name="", description="", items=[], exits=[]):
+        self.name = name
+        self.description = description
+        self.items = items
+        self.exits = exits
+
+# START_PSEUDO
+list_of_locations = []
+
+bogwater = location("Bogwater", "A swampy bog", [stone, stick])
+list_of_locations.append(bogwater)
+
+great_hall = location("The Great Hall", "A large hall", [bread, water])
+list_of_locations.append(great_hall)
+
+throne_room = location("The Throne Room", "A room with a throne", [sword, shield])
+list_of_locations.append(throne_room)
+
+bogwater.exits = [great_hall]
+great_hall.exits = [bogwater, throne_room]
+throne_room.exits = [great_hall]
+# END_PSEUDO
+
+
+Code:
+
+from datatypes import *
+
+class location:
+    name: str
+    description: str
+    items: list[item]
+    exits: list[str]
+
+    def __init__(self, name="", description="", items=[], exits=[]):
+        self.name = name
+        self.description = description
+        self.items = items
+        self.exits = exits
+
+# START_PSEUDO
+list_of_locations = []
+
+bogwater = location("Bogwater", "A swampy bog", [stone, stick])
+list_of_locations.append(bogwater)
+
+great_hall = location("The Great Hall", "A large hall", [bread, water])
+list_of_locations.append(great_hall)
+
+throne_room = location("The Throne Room", "A room with a throne", [sword, shield])
+list_of_locations.append(throne_room)
+
+bogwater.exits = [great_hall]
+great_hall.exits = [bogwater, throne_room]
+throne_room.exits = [great_hall]
+# END_PSEUDO
+
+Template exists: True
+Validation output: 
+The output code is invalid. The variables stone, stick, bread, water, sword, and shield have not been defined before they are used to create the location instances. These variables should be defined as instances of the 'item' class from the 'datatypes' module before they are used.
+Message: 
+[{'role': 'system', 'content': 'Using the given comments, fix the code so that it is valid.'}, {'role': 'user', 'content': '<Code>\nfrom datatypes import *\n\nclass location:\n    name: str\n    description: str\n    items: list[item]\n    exits: list[str]\n\n    def __init__(self, name="", description="", items=[], exits=[]):\n        self.name = name\n        self.description = description\n        self.items = items\n        self.exits = exits\n\n# START_PSEUDO\nlist_of_locations = []\n\nbogwater = location("Bogwater", "A swampy bog", [stone, stick])\nlist_of_locations.append(bogwater)\n\ngreat_hall = location("The Great Hall", "A large hall", [bread, water])\nlist_of_locations.append(great_hall)\n\nthrone_room = location("The Throne Room", "A room with a throne", [sword, shield])\nlist_of_locations.append(throne_room)\n\nbogwater.exits = [great_hall]\ngreat_hall.exits = [bogwater, throne_room]\nthrone_room.exits = [great_hall]\n# END_PSEUDO\n</Code><Fixes>The output code is invalid. The variables stone, stick, bread, water, sword, and shield have not been defined before they are used to create the location instances. These variables should be defined as instances of the \'item\' class from the \'datatypes\' module before they are used.</Fixes>'}]
+Fix output: 
+<Code>
+from datatypes import *
+
+class location:
+    name: str
+    description: str
+    items: list[item]
+    exits: list[str]
+
+    def __init__(self, name="", description="", items=[], exits=[]):
+        self.name = name
+        self.description = description
+        self.items = items
+        self.exits = exits
+
+# Define items
+stone = item('stone', 'A small, round stone')
+stick = item('stick', 'A long, thin stick')
+bread = item('bread', 'A piece of bread')
+water = item('water', 'A flask of water')
+sword = item('sword', 'A sharp sword')
+shield = item('shield', 'A sturdy shield')
+
+# START_PSEUDO
+list_of_locations = []
+
+bogwater = location("Bogwater", "A swampy bog", [stone, stick])
+list_of_locations.append(bogwater)
+
+great_hall = location("The Great Hall", "A large hall", [bread, water])
+list_of_locations.append(great_hall)
+
+throne_room = location("The Throne Room", "A room with a throne", [sword, shield])
+list_of_locations.append(throne_room)
+
+bogwater.exits = [great_hall]
+great_hall.exits = [bogwater, throne_room]
+throne_room.exits = [great_hall]
+# END_PSEUDO
+</Code>
+Code written to locations.py
