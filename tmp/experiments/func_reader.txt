@@ -15,7 +15,7 @@ func: get_AST_project:
     description: get AST of all files from project_path
     procedure:
     - get all files from project_path
-    - get AST of all files
+    - get AST of python files
     - return dict<filepath, AST>
 
 func: get_function_list:
@@ -30,3 +30,11 @@ func: get_function_list_project:
     procedure:
     - get function list of all files
     - return dict<filepath, list<function>>
+
+func: func_list_proj_tostring:
+    input: dict<filepath, list<function>>
+    output: string
+    description: convert dict<filepath, list<function>> to string
+    procedure:
+    - convert dict<filepath, list<function>> to string
+    - return string

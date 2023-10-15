@@ -1,2 +1,2 @@
 from pseudo.main import *
-from pseudo.func_reader import *
+from pseudo.ast_reader import *

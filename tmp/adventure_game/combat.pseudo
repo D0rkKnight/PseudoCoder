@@ -1,0 +1,27 @@
+Psuedocode:
+
+SpawnPool: List(Enemy)
+- Rock
+- Goblin
+- Dragon
+- Knight
+    
+player = datatypes.player()
+
+def combat:
+- enemy = spawnEnemy()
+- while player.health > 0 and enemy.health > 0:
+    - Get input: Player choice?
+    - if player choice == "attack":
+        - tryAttack(player, enemy)
+    - else:
+        - print("Doing nothing this turn.")
+    - tryAttack(enemy, player)
+
+def tryAttack(combatant, recipient):
+- if combatant.attack > recipient.defense:
+    - recipient.health -= combatant.attack - recipient.defense
+    - print(combatant.name + " attacks " + recipient.name + " for " + str(combatant.attack - recipient.defense) + " damage!")
+
+def spawnEnemy:
+- return random.choice(spawnPool)

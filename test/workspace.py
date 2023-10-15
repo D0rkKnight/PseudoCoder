@@ -1,11 +1,10 @@
 import pseudo
+import os
 
-ast = pseudo.get_AST("tmp/func_reader.py")
+# Change working dir to tmp/adventure_game
+os.chdir(os.path.join(os.getcwd(), "tmp", "adventure_game"))
 
-proj_ast = pseudo.get_AST_project("tmp")
 
-func = pseudo.get_function_list(ast)
+pseudo.generate_code("datatypes.pseudo")
 
-proj_func = pseudo.get_function_list_project(proj_ast)
-
-print(ast)
+print("Done!")

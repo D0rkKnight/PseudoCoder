@@ -1,29 +1,89 @@
 import openai
 import os
 import argparse
+import json
 
 import pseudo.utils as utils
+import pseudo.ast_reader as ast_reader
 
 # Set up authentication for the OpenAI API
-openai.api_key = "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"
+openai.api_key = os.environ["OPENAI_API_KEY"]
 
 GEN_PSEUDO_PROMPT = """ Given the following Python code, write pseudocode for the code and return only that pseudocode."""
-GEN_CODE_PROMPT = """ Given the following pseudocode, write Python code for the pseudocode and return only that Python code."""
-MOD_CODE_PROMPT = """Given the following Python code and pseudocode, modify the template code as minimally as possible to match the pseudocode and return only the complete Python code. If the template code matches the pseudocode, return the template code."""
+
+GEN_CODE_PROMPT = """ Given the following pseudocode and tree of symbols, write Python code for the pseudocode and return only that Python code."""
+MOD_CODE_PROMPT = """Given the following Python code, pseudocode, and tree of symbols, modify the template code to match the full pseudocode and return only the complete Python code. If the template code matches the pseudocode fully, return the template code."""
 
 WARNING = """IMPORTANT: You must ONLY return complete code.
 IMPORTANT: Do NOT summarize parts of the code. Show the code IN FULL."""
 
+EXAMPLES = """Below are a series of examples for reference.
+Example 1:
+Psuedocode:
+class A:
+- fields: str_var, int_var
+
+Output:
+class A:
+
+    # Important! Make variables type safe.
+    str_var: str
+    int_var: int
+
+    def __init__(self, str_var, int_var):
+
+Example 2:
+Psuedocode:
+print Hello World
+
+Template:
+print("Hello World")
+
+Output:
+print("Hello World")
+
+Note that the template code is returned unchanged because it already matches the pseudocode.
+
+Example 3:
+Psuedocode:
+
+SpawnPool: List(Enemy)
+- Rock
+    
+Symbols:
+"datatypes.py": [{"type": "class", "name": "combatant", "children": [{"type": "variable", "name": "name", "children": []}, {"type": "variable", "name": "health", "children": []}, {"type": "variable", "name": "attack", "children": []}, {"type": "variable", "name": "defense", "children": []}, {"type": "function", "name": "__init__", "children": []}]}, {"type": "class", "name": "enemy", "children": [{"type": "variable", "name": "loot", "children": []}, {"type": "variable", "name": "xp", "children": []}, {"type": "function", "name": "__init__", "children": []}]}]
+
+Output:
+from datatypes import enemy
+
+SpawnPool = []
+
+rock = enemy("Rock", 10, 5, 1, 0)
+SpawnPool.append(rock)
+
+Note how he enemy type is inferred from the symbols list.
+
+"""
+
 MAX_TOKENS = 2000
+LOG_MSG = True
 
 
 def cli():
     parser = argparse.ArgumentParser(description="Generate pseudocode from a file")
     parser.add_argument("input_file", help="Path to the input file")
+    parser.add_argument(
+        "-r",
+        "--reverse",
+        action="store_true",
+        help="Generate Python code from pseudocode",
+    )
     args = parser.parse_args()
 
-    # generate_pseudocode(args.input_file)
-    generate_code(args.input_file)
+    if args.reverse:
+        generate_pseudocode(args.input_file)
+    else:
+        generate_code(args.input_file)
 
 
 if __name__ == "__main__":
@@ -71,20 +131,25 @@ def generate_code(input_file):
         with open(output_file, "r") as f:
             template = f.read()
 
-    template_exists = template != ""
+    # Get list of functions
+    proj_ast = ast_reader.get_AST_project(os.getcwd())
+    symbol_list = ast_reader.get_symbols_project(proj_ast)
 
+    symbol_str = json.dumps(symbol_list, cls=ast_reader.CustomEncoder)
+
+    messages = [
+        {"role": "system", "content": MOD_CODE_PROMPT + "\n" + WARNING},
+        {"role": "system", "content": EXAMPLES},
+        {"role": "user", "content": "These are available symbols: " + symbol_str},
+        {"role": "user", "content": "This is the pseudocode: " + pseudocode},
+    ]
+
+    # template_exists = template != ""
+    template_exists = False  # No more templating, see what happens
     if template_exists:
-        messages = [
-            {"role": "system", "content": MOD_CODE_PROMPT + "\n" + WARNING},
-            {"role": "user", "content": "This is the pseudocode: " + pseudocode},
-            {"role": "user", "content": "This is the template code: " + template},
-        ]
-
-    else:
-        messages = [
-            {"role": "system", "content": GEN_CODE_PROMPT + "\n" + WARNING},
-            {"role": "user", "content": pseudocode},
-        ]
+        messages.append(
+            {"role": "user", "content": "This is the template code: " + template}
+        )
 
     # Use the OpenAI API to generate code from the file contents
     response = openai.ChatCompletion.create(
@@ -101,5 +166,10 @@ def generate_code(input_file):
     with open(output_file, "w") as f:
         f.write(code)
 
-    print(f"Pseudocode written to {output_file}")
+    if LOG_MSG:
+        for message in messages:
+            print(message["role"] + ":")
+            print(message["content"] + "\n")
+
+    print(f"Code written to {output_file}")
     print(f"Template exists: {template_exists}")

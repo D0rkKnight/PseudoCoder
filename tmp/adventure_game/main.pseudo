@@ -1,0 +1,38 @@
+Pseudocode:
+
+Import the necessary modules: time and random
+
+Define a function called display_intro:
+- Print "welcome to the adventure game"
+
+Define a function called get_player_name:
+- Print "what is your name"
+- Obtain player name from user input
+- Return player name
+
+Define a function called start_game:
+- Print "you encounter a rock"
+- Prompt the player with the question "what do you do?" and obtain the player's action
+- If the player's action is "fight", then:
+  - Print "you fight the rock"
+  - Print "you win"
+- Else:
+  - Print "you run away"
+  - Print "you lose"
+
+Define a function called play_again:
+- Print "do you want to play again"
+- Obtain the player's response
+- Return the player's response
+
+Set the variable player_name to an empty string
+Set the variable game_over to False
+
+Call the display_intro function
+Set the player_name variable to the value returned by the get_player_name function
+
+While game_over is False:
+- Call the start_game function
+- Set game_over to not the value returned by the play_again function
+
+Print "Game Over"

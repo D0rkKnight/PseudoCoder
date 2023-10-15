@@ -1,0 +1,13 @@
+def func_list_to_string:
+    input: list[str]
+    output: str
+    procedure:
+    - return in format "func1, func2, func3"
+
+def proj_func_list_to_string:
+    input: dict<fname: str, funclist: list[str]>
+    output: str
+    procedure:
+    - return in format "fname: func1, func2, func3
+                        fname: func1, func2, func3
+                        fname: func1, func2, func3"
