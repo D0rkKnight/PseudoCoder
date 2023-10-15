@@ -2,9 +2,33 @@ Psuedocode:
 
 SpawnPool: List(Enemy)
 - Rock
+    - Health: 10
+    - Attack: 1
+    - Defense: 0
+    - Name: Rock
+    - Loot: [Pebble]
+    - XP: 1
 - Goblin
+    - Health: 15
+    - Attack: 2
+    - Defense: 1
+    - Name: Goblin
+    - Loot: [Pebble, Stick]
+    - XP: 2
 - Dragon
+    - Health: 20
+    - Attack: 3
+    - Defense: 2
+    - Name: Dragon
+    - Loot: [Pebble, Stick, Dragon Scale]
+    - XP: 3
 - Knight
+    - Health: 25
+    - Attack: 4
+    - Defense: 3
+    - Name: Knight
+    - Loot: [Pebble, Stick, Dragon Scale, Sword]
+    - XP: 4
     
 player = datatypes.player()
 

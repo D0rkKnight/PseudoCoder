@@ -9,12 +9,13 @@ import pseudo.ast_reader as ast_reader
 # Set up authentication for the OpenAI API
 openai.api_key = os.environ["OPENAI_API_KEY"]
 
+PERSONA = "You are PseudoGPT, an assistant that helps programmers write pseudocode and code. You are given a file with Python code and asked to generate pseudocode for it."
 GEN_PSEUDO_PROMPT = """ Given the following Python code, write pseudocode for the code and return only that pseudocode."""
 
 GEN_CODE_PROMPT = """ Given the following pseudocode and tree of symbols, write Python code for the pseudocode and return only that Python code."""
-MOD_CODE_PROMPT = """Given the following Python code, pseudocode, and tree of symbols, modify the template code to match the full pseudocode and return only the complete Python code. If the template code matches the pseudocode fully, return the template code."""
+MOD_CODE_PROMPT = """Given the following Python code, pseudocode, and tree of symbols, modify the template code to match the full pseudocode while retaining the overall structure, and return only the complete Python code. If the template code matches the pseudocode fully, return the template code."""
 
-WARNING = """IMPORTANT: You must ONLY return complete code.
+WARNING = """IMPORTANT: Please do not return text before or after the code.
 IMPORTANT: Do NOT summarize parts of the code. Show the code IN FULL."""
 
 EXAMPLES = """Below are a series of examples for reference.
@@ -31,6 +32,8 @@ class A:
     int_var: int
 
     def __init__(self, str_var, int_var):
+
+Note that it did not output any text before or after the code explaining what the code does. It also did not summarize the code. It only showed the code in full.
 
 Example 2:
 Psuedocode:
@@ -65,7 +68,7 @@ Note how he enemy type is inferred from the symbols list.
 
 """
 
-MAX_TOKENS = 2000
+MAX_TOKENS = 4000
 LOG_MSG = True
 
 
@@ -102,7 +105,7 @@ def generate_pseudocode(input_file):
 
     # Use the OpenAI API to generate pseudocode from the file contents
     response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
+        model="gpt-4",
         messages=messages,
         max_tokens=MAX_TOKENS,
     )
@@ -138,6 +141,7 @@ def generate_code(input_file):
     symbol_str = json.dumps(symbol_list, cls=ast_reader.CustomEncoder)
 
     messages = [
+        {"role": "system", "content": PERSONA},
         {"role": "system", "content": MOD_CODE_PROMPT + "\n" + WARNING},
         {"role": "system", "content": EXAMPLES},
         {"role": "user", "content": "These are available symbols: " + symbol_str},
@@ -153,9 +157,10 @@ def generate_code(input_file):
 
     # Use the OpenAI API to generate code from the file contents
     response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
+        model="gpt-4",
         messages=messages,
         max_tokens=MAX_TOKENS,
+        temperature=0.5,
     )
 
     # Extract the generated code from the API response

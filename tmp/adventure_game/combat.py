@@ -1,39 +1,41 @@
-from datatypes import enemy, player
+
+from datatypes import enemy, player, item
 import random
 
-spawnPool = []
-rock = enemy("Rock", 10, 5, 1, 0, 1)
-spawnPool.append(rock)
+# Define items
+pebble = item("Pebble", "A small stone", 1)
+stick = item("Stick", "A sturdy stick", 2)
+dragon_scale = item("Dragon Scale", "A scale from a dragon", 3)
+sword = item("Sword", "A sharp sword", 4)
 
-goblin = enemy("Goblin", 20, 10, 2, 10, 5)
-spawnPool.append(goblin)
+# Define enemies and add them to the SpawnPool
+SpawnPool = []
+rock = enemy("Rock", 10, 1, 0, [pebble], 1)
+SpawnPool.append(rock)
+goblin = enemy("Goblin", 15, 2, 1, [pebble, stick], 2)
+SpawnPool.append(goblin)
+dragon = enemy("Dragon", 20, 3, 2, [pebble, stick, dragon_scale], 3)
+SpawnPool.append(dragon)
+knight = enemy("Knight", 25, 4, 3, [pebble, stick, dragon_scale, sword], 4)
+SpawnPool.append(knight)
 
-dragon = enemy("Dragon", 50, 20, 5, 50, 10)
-spawnPool.append(dragon)
+# Initialize player
+player = player()
 
-knight = enemy("Knight", 30, 15, 3, 20, 7)
-spawnPool.append(knight)
-
-
-def combat(player):
+def combat():
     enemy = spawnEnemy()
     while player.health > 0 and enemy.health > 0:
-        tryAttack(player, enemy)
+        player_choice = input("Player choice?")
+        if player_choice == "attack":
+            tryAttack(player, enemy)
+        else:
+            print("Doing nothing this turn.")
         tryAttack(enemy, player)
-
 
 def tryAttack(combatant, recipient):
     if combatant.attack > recipient.defense:
         recipient.health -= combatant.attack - recipient.defense
-        print(
-            combatant.name
-            + " attacks "
-            + recipient.name
-            + " for "
-            + str(combatant.attack - recipient.defense)
-            + " damage!"
-        )
-
+        print(combatant.name + " attacks " + recipient.name + " for " + str(combatant.attack - recipient.defense) + " damage!")
 
 def spawnEnemy():
-    return random.choice(spawnPool)
+    return random.choice(SpawnPool)
