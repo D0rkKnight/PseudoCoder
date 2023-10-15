@@ -29,10 +29,8 @@ SpawnPool: List(Enemy)
     - Name: Knight
     - Loot: [Pebble, Stick, Dragon Scale, Sword]
     - XP: 4
-    
-player = datatypes.player()
 
-def combat:
+def combat(player):
 - enemy = spawnEnemy()
 - while player.health > 0 and enemy.health > 0:
     - Get input: Player choice?

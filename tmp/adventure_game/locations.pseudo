@@ -1,0 +1,8 @@
+class location:
+    name: str, description: str, items: list[item], exits = "", "", [], []
+
+list_of_locations = list[location]
+- Bogwater, "A swampy bog", [stone, stick]
+- The Great Hall, "A large hall", [bread, water]
+- The Throne Room, "A room with a throne", [sword, shield]
+- Connections for rooms: Bogwater: [The Great Hall], The Great Hall: [Bogwater, The Throne Room], The Throne Room: [The Great Hall]

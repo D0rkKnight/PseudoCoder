@@ -1,0 +1,83 @@
+<Example 1>
+    <Pseudocode>
+        class A:
+        - fields: str_var, int_var
+    </Pseudocode>
+
+    <Output>
+        class A:
+
+            # Important! Make variables type safe.
+            str_var: str
+            int_var: int
+
+            def __init__(self, str_var, int_var):
+    </Output>
+
+    <Comments>
+        Note that it did not output any text before or after the code explaining what the code does. It also did not summarize the code. It only showed the code in full.
+    </Comments>
+</Example 1>
+
+<Example 2>
+    <Pseudocode>
+        print Hello World
+    </Pseudocode>
+
+    <Template>
+        print("Hello World")
+    </Template>
+
+    <Output>
+        print("Hello World")
+    </Output>
+
+    <Comments>
+        Note that the template code is returned unchanged because it already matches the pseudocode.
+    </Comments>
+</Example 2>
+
+<Example 3>
+    <Pseudocode>
+        SpawnPool: List(Enemy)
+        - Rock
+    </Pseudocode>
+
+    <Symbols>
+        "datatypes.py": [{"type": "class", "name": "combatant", "children": [{"type": "variable", "name": "name", "children": []}, {"type": "variable", "name": "health", "children": []}, {"type": "variable", "name": "attack", "children": []}, {"type": "variable", "name": "defense", "children": []}, {"type": "function", "name": "__init__", "children": []}]}, {"type": "class", "name": "enemy", "children": [{"type": "variable", "name": "loot", "children": []}, {"type": "variable", "name": "xp", "children": []}, {"type": "function", "name": "__init__", "children": []}]}]
+    </Symbols>
+
+    <Output>
+        from datatypes import enemy
+
+        SpawnPool = []
+
+        rock = enemy("Rock", 10, 5, 1, 0)
+        SpawnPool.append(rock)
+    </Output>
+
+    <Comments>
+        Note how the enemy type is inferred from the symbols list.
+    </Comments>
+</Example 3>
+
+WITH THE ABOVE FORMAT
+
+class example
+- pseudocode
+- template
+- output
+- comments
+
+examples: list[example]
+- example1, example2, example3 (as referenced above)
+
+def example_to_string(example):
+    return example in XML format as demonstrated above
+
+def get_examples_str():
+    out: str
+    for example in examples:
+        out += example_to_string(example)
+    
+    return out
