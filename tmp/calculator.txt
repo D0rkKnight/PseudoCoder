@@ -18,6 +18,7 @@ Operation schema:
 - symbol: symbol of operation
 - function: function of operation
 - description: description of operation
+- example: example of operation
 
 Functions (of type operation):
 - add: a + b, return result

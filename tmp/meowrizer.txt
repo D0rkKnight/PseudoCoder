@@ -1,0 +1,14 @@
+spam the hell out of me with MEOWS
+
+if name == main
+- While true
+    MEOW
+
+func Meow:
+- Pick a meow from below
+    - MEOW
+    - MEOW MEOW
+    - MEOW MEOW MEOW
+    - Mreow
+    - Mreow
+    - MOO

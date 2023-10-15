@@ -1,0 +1,15 @@
+# Program that changes lamp to green when I eat a jellybean
+
+main:
+- While:
+    - If:
+        - I eat a jellybean
+        - Change lamp to green
+
+change_lamp_green:
+- print "Lamp is green"
+
+i_eat_jellybean:
+- get input from user
+- if input is "jellybean"
+    - return true

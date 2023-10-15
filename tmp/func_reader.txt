@@ -4,3 +4,29 @@ func: get_AST:
     input: file_path
     output: AST
     description: get AST from file_path
+    procedure:
+    - Using the ast std lib
+    - read file
+    - return AST
+
+func: get_AST_project:
+    input: project_path
+    output: dict<filepath, AST>
+    description: get AST of all files from project_path
+    procedure:
+    - get all files from project_path
+    - get AST of all files
+    - return dict<filepath, AST>
+
+func: get_function_list:
+    input: AST
+    output: list<function>
+    description: get function list from AST
+
+func: get_function_list_project:
+    input: dict<filepath, AST>
+    output: dict<filepath, list<function>>
+    description: get function list of all files from dict<filepath, AST>
+    procedure:
+    - get function list of all files
+    - return dict<filepath, list<function>>

@@ -5,10 +5,16 @@ import argparse
 import pseudo.utils as utils
 
 # Set up authentication for the OpenAI API
-openai.api_key = "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"
+openai.api_key = "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"
 
 GEN_PSEUDO_PROMPT = """ Given the following Python code, write pseudocode for the code and return only that pseudocode."""
 GEN_CODE_PROMPT = """ Given the following pseudocode, write Python code for the pseudocode and return only that Python code."""
+MOD_CODE_PROMPT = """Given the following Python code and pseudocode, modify the template code as minimally as possible to match the pseudocode and return only the complete Python code. If the template code matches the pseudocode, return the template code."""
+
+WARNING = """IMPORTANT: You must ONLY return complete code.
+IMPORTANT: Do NOT summarize parts of the code. Show the code IN FULL."""
+
+MAX_TOKENS = 2000
 
 
 def cli():
@@ -38,7 +44,7 @@ def generate_pseudocode(input_file):
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=messages,
-        max_tokens=1000,
+        max_tokens=MAX_TOKENS,
     )
 
     # Extract the generated pseudocode from the API response
@@ -53,20 +59,38 @@ def generate_pseudocode(input_file):
 
 
 def generate_code(input_file):
+    output_file = os.path.splitext(input_file)[0] + ".py"
+
     # Read the contents of the input file
     with open(input_file, "r") as f:
-        file_contents = f.read()
+        pseudocode = f.read()
 
-    messages = [
-        {"role": "system", "content": GEN_CODE_PROMPT},
-        {"role": "user", "content": file_contents},
-    ]
+    # Read the contents of the template file
+    template = ""
+    if os.path.exists(output_file):
+        with open(output_file, "r") as f:
+            template = f.read()
+
+    template_exists = template != ""
+
+    if template_exists:
+        messages = [
+            {"role": "system", "content": MOD_CODE_PROMPT + "\n" + WARNING},
+            {"role": "user", "content": "This is the pseudocode: " + pseudocode},
+            {"role": "user", "content": "This is the template code: " + template},
+        ]
+
+    else:
+        messages = [
+            {"role": "system", "content": GEN_CODE_PROMPT + "\n" + WARNING},
+            {"role": "user", "content": pseudocode},
+        ]
 
     # Use the OpenAI API to generate code from the file contents
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=messages,
-        max_tokens=1000,
+        max_tokens=MAX_TOKENS,
     )
 
     # Extract the generated code from the API response
@@ -74,8 +98,8 @@ def generate_code(input_file):
     code = utils.strip_code_markdown(code)
 
     # Write to python file
-    output_file = os.path.splitext(input_file)[0] + ".py"
     with open(output_file, "w") as f:
         f.write(code)
 
     print(f"Pseudocode written to {output_file}")
+    print(f"Template exists: {template_exists}")
