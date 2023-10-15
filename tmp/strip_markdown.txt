@@ -1,0 +1,4 @@
+# Python module
+
+def function: strip code markdown
+- Check start and end. If ``` found, remove that AND the Python header next to the first ```.

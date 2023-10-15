@@ -1,0 +1,6 @@
+# Python module
+
+func: get_AST:
+    input: file_path
+    output: AST
+    description: get AST from file_path

@@ -1,0 +1,26 @@
+# Calculator app
+
+Entrypoint: name==main
+obj_list: list of operation objects
+
+Main:
+- Print: Welcome to calculator app. Type help for help. Type exit to exit.
+- while running
+    - get input
+    - if input is exit
+        - exit
+    - if input is help
+        - print help
+    - switch input to function
+
+Operation schema:
+- name: name of operation
+- symbol: symbol of operation
+- function: function of operation
+- description: description of operation
+
+Functions (of type operation):
+- add: a + b, return result
+- subtract: a - b, return result
+- multiply: a * b, return result
+- divide: a / b, return result
